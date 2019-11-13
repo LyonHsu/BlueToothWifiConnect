@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--//20161027 TV_BOX-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--item android:state_selected="true" >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="2dp" android:color="#15efef" />
+
+            <padding android:left="5dp" android:top="2dp"
+                android:right="5dp" android:bottom="2dp" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item-->
+    <item android:state_pressed="true" >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="2dp" android:color="#40b700" />
+
+            <padding android:left="5dp" android:top="2dp"
+                android:right="5dp" android:bottom="2dp" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+
+    <item android:state_focused="true" >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <stroke android:width="2dp" android:color="#22ff00" />
+
+            <padding android:left="5dp" android:top="2dp"
+                android:right="5dp" android:bottom="2dp" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+   
+</selector>
