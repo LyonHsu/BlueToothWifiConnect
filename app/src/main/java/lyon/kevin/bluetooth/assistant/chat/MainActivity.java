@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -54,8 +55,8 @@ public class MainActivity extends Activity {
     private ListView listView;
     private Dialog dialog;
     private TextInputLayout inputLayout;
-    private ArrayAdapter<String> chatAdapter;
-    private ArrayList<String> chatMessages;
+    private  ChatAdapter chatAdapter;//ArrayAdapter<String>
+    private ArrayList<HashMap<String,String>> chatMessages;
     private BluetoothAdapter bluetoothAdapter;
 
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -71,6 +72,8 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> discoveredDevicesAdapter;
     WifiSetting wifiSetting;
     Context context;
+
+    final String TYPE = "TYPE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +102,8 @@ public class MainActivity extends Activity {
 
         //set chat adapter
         chatMessages = new ArrayList<>();
-        chatAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatMessages);
+        //new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatMessages);
+        chatAdapter = new ChatAdapter(this,chatMessages);
         listView.setAdapter(chatAdapter);
     }
 
@@ -125,6 +129,8 @@ public class MainActivity extends Activity {
                             setStatus("Not connected");
                             btnConnect.setEnabled(true);
                             btnWifiSet.setVisibility(View.GONE);
+                            chatMessages.clear();
+                            chatAdapter.notifyDataSetChanged();
                             break;
                     }
                     break;
@@ -132,7 +138,10 @@ public class MainActivity extends Activity {
                     byte[] writeBuf = (byte[]) msg.obj;
 
                     String writeMessage = new String(writeBuf);
-                    chatMessages.add("Me: " + writeMessage);
+                    HashMap<String,String> hashMap = new HashMap();
+                    hashMap.put("TYPE","");
+                    hashMap.put("MSG","Me: " + writeMessage);
+                    chatMessages.add(hashMap);
                     chatAdapter.notifyDataSetChanged();
                     break;
                 case MESSAGE_READ:
@@ -450,7 +459,7 @@ public class MainActivity extends Activity {
     private void procressJson(JSONObject jsonObject){
         final String IP = "IP";
         final String SSID="SSID";
-        final String TYPE = "TYPE";
+        final String TYPE = "Type";
         final String LOGd="LOGd";
         final String LOGe="LOGe";
         final String LOGi="LOGi";
@@ -473,25 +482,18 @@ public class MainActivity extends Activity {
             }
         }else if(jsonObject.has(TYPE)){
             String Typestr = jsonObject.optString(TYPE);
-            switch (Typestr){
-                case LOGd:
-                    break;
-                case LOGe:
-                    break;
-                case LOGi:
-                    break;
-                case LOGw:
-                    break;
-                case LOGv:
-                    break;
-                default:
-                    chatMessages.add(connectingDevice.getName() + ":  " + jsonObject);
-                    break;
-            }
+            HashMap<String,String> hashMap = new HashMap();
+            hashMap.put(TYPE,Typestr);
+            hashMap.put("MSG",connectingDevice.getName() + ":  " + jsonObject);
+            chatMessages.add(hashMap);
             chatAdapter.notifyDataSetChanged();
 
         } else {
-            chatMessages.add(connectingDevice.getName() + ":  " + jsonObject);
+            String Typestr = jsonObject.optString(TYPE,"");
+            HashMap<String,String> hashMap = new HashMap();
+            hashMap.put(TYPE,Typestr);
+            hashMap.put("MSG",connectingDevice.getName() + ":  " + jsonObject);
+            chatMessages.add(hashMap);
             chatAdapter.notifyDataSetChanged();
         }
     }
